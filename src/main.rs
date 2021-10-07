@@ -101,7 +101,7 @@ fn real_main() -> i32 {
                 .help("Hash algorithm: Default = Gradient")
                 .takes_value(true)
                 .case_insensitive(true)
-                .possible_values(&ClapFilterType::iter_variant_names().collect::<Vec<&'static str>>()))
+                .possible_values(&ClapHashAlg::iter_variant_names().collect::<Vec<&'static str>>()))
 
             .arg(Arg::with_name("IMAGE")
                 .help("Sets the input image path")
