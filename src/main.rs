@@ -1,7 +1,6 @@
 extern crate image;
 
 extern crate img_hash;
-use img_hash::{HasherConfig, HashAlg};
 
 extern crate clap;
 use clap::{Arg, App};
@@ -44,14 +43,14 @@ custom_derive! {
     }
 }
 
-impl From<ClapHashAlg> for HashAlg {
+impl From<ClapHashAlg> for img_hash::HashAlg {
     fn from(hash_alg: ClapHashAlg) -> Self {
         match hash_alg {
-            ClapHashAlg::Mean => HashAlg::Mean,
-            ClapHashAlg::Gradient => HashAlg::Gradient,
-            ClapHashAlg::VertGradient => HashAlg::VertGradient,
-            ClapHashAlg::DoubleGradient => HashAlg::DoubleGradient,
-            ClapHashAlg::Blockhash => HashAlg::Blockhash,
+            ClapHashAlg::Mean => img_hash::HashAlg::Mean,
+            ClapHashAlg::Gradient => img_hash::HashAlg::Gradient,
+            ClapHashAlg::VertGradient => img_hash::HashAlg::VertGradient,
+            ClapHashAlg::DoubleGradient => img_hash::HashAlg::DoubleGradient,
+            ClapHashAlg::Blockhash => img_hash::HashAlg::Blockhash,
         }
     }
 }
@@ -64,7 +63,7 @@ mod build_info {
 
 fn real_main() -> i32 {
 
-    let about = format!("Creates or compares hash values from images.\nBuild time: {}\nGit commit hash: {}",
+    let about = format!("Creates or compares hash values from images.\nhttps://github.com/KevinGliewe/imghash\nBuild time: {}\nGit commit hash: {}",
         build_info::BUILT_TIME_UTC,
         match build_info::GIT_COMMIT_HASH {
             Some(hash) => hash,
@@ -105,16 +104,16 @@ fn real_main() -> i32 {
                 .possible_values(&ClapFilterType::iter_variant_names().collect::<Vec<&'static str>>()))
 
             .arg(Arg::with_name("IMAGE")
-                .help("Sets the input file to use")
+                .help("Sets the input image path")
                 .required(true)
                 .index(1))
             .arg(Arg::with_name("IMAGE_CMP")
-                .help("Sets the input file to use")
+                .help("Sets the compare image path (If not set, the hash of IMAGE will get printet out)")
                 .required(false)
                 .index(2))
             .get_matches();
     
-    let mut config = HasherConfig::new();
+    let mut config = img_hash::HasherConfig::new();
 
 
     config = config.hash_size(
