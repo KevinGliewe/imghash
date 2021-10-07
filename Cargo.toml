@@ -1,0 +1,16 @@
+[package]
+name = "imghash"
+version = "0.0.0"
+edition = "2018"
+build = "build.rs"
+
+[build-dependencies]
+built = { version = "0.5", features = ["git2", "chrono", "semver"] }
+
+
+[dependencies]
+image = "0.23.14"
+img_hash = "3.2.0"
+clap = "2.33.3"
+enum_derive = "0.1.7"
+custom_derive = "0.1.7"

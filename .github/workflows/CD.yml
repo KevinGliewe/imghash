@@ -1,0 +1,62 @@
+name: Build, bump tag version and release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  bump:
+    name: Bump tag version
+    runs-on: ubuntu-latest
+    outputs:
+      newtag: ${{ steps.bump_version.outputs.new_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build project
+        run: cargo build --release --locked
+
+      - name: Bump version and push tag/create release point
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+        id: bump_version
+
+  release:
+    name: Build and Release
+    needs: bump
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      matrix:
+        config:
+          - { os: macos-latest, name: macos, extension: ""}
+          - { os: ubuntu-latest, name: linux, extension: "" }
+          - { os: windows-latest, name: windows, extension: ".exe" }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.9'
+
+      - name: Update Version
+        run: python scripts/update_version.py "${{ needs.bump.outputs.newtag }}"
+
+      - name: Build project
+        run: cargo build --release
+        
+      - name: Upload binary to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/imghash${{ matrix.config.extension }}
+          asset_name: imghash-${{ matrix.config.name }}${{ matrix.config.extension }}
+          tag: ${{ needs.bump.outputs.newtag }}
+          overwrite: true
