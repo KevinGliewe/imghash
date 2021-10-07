@@ -14,8 +14,8 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -a, --hash_alg <hash_alg>              Hash algorithm: Default = Gradient [possible values: Nearest, Triangle,
-                                           CatmullRom, Gaussian, Lanczos3]
+    -a, --hash_alg <hash_alg>              Hash algorithm: Default = Gradient [possible values: Mean, Gradient,
+                                           VertGradient, DoubleGradient, Blockhash]
     -h, --height <height>                  Hash height: Default = 8
     -f, --resize_filter <resize_filter>    Resize Filter: Default = Lanczos3 [possible values: Nearest, Triangle,
                                            CatmullRom, Gaussian, Lanczos3]
